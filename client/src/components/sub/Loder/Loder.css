@@ -1,0 +1,22 @@
+.loderpadding {
+  background-color: #8f61fba9;
+  border-radius: 30px;
+  width: 180px;
+  border-width: 2px;
+  height: 180px;
+}
+
+.loader {
+  margin-left: 60px;
+  /* padding-top: 10px; */
+}
+.texts {
+  color: rgba(240, 248, 255, 0.925);
+  padding: 8px;
+  margin-left: 20px;
+}
+.texts2 {
+  color: rgba(240, 248, 255, 0.925);
+  padding: 10px;
+  margin-left: 25px;
+}

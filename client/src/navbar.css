@@ -1,0 +1,29 @@
+.navbar {
+  height: 70px;
+  border-radius: 5px;
+  margin-right: 410px;
+  /* background-color: #030014; */
+}
+
+.navbar ul {
+  display: flex;
+  /* justify-content: space-evenly; */
+  /* margin-left: 130px; */
+  /* list-style: none; */
+}
+
+.navbar ul li a {
+  margin-left: 15rem;
+  text-decoration: none;
+  color: white;
+  font-size: 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.lefts {
+  padding-left: 10px;
+}

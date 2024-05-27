@@ -1,0 +1,178 @@
+// import React from "react";
+// import { useEffect, useState } from "react";
+// import KECCAK256 from "keccak256";
+// import { ethers } from "ethers";
+// import MerkleTree from "merkletreejs";
+// import { Buffer } from "buffer/";
+// import artifact from "./artifacts/contracts/MerkleDistributor.sol/MerkleDistributor.json";
+// import Navbar from "./Navbar";
+// import "./App.css";
+// const { utils } = require("ethers");
+// const CONTRACT_ADDRESS = "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e";
+// window.Buffer = window.Buffer || Buffer;
+
+// function UserClaim() {
+//   const [provider, setProvider] = useState(undefined);
+//   const [signer, setSigner] = useState(undefined);
+//   const [contract, setContract] = useState(undefined);
+//   const [signerAddress, setSignerAddress] = useState(undefined);
+//   const [tree, setTree] = useState(undefined);
+//   const [proof, setProof] = useState([]);
+//   const [claimStatus, setClaimStatus] = useState("");
+//   const [tokenAddress, setTokenAddress] = useState("");
+//   const [claimAmount, setClaimAmount] = useState([]);
+
+//   useEffect(() => {
+//     const onLoad = async () => {
+//       if (window.ethereum) {
+//         const provider = await new ethers.providers.Web3Provider(
+//           window.ethereum
+//         );
+//         setProvider(provider);
+//         const contract = await new ethers.Contract(
+//           CONTRACT_ADDRESS,
+//           artifact.abi,
+//           provider
+//         );
+//         setContract(contract);
+//         const tree = await getTree();
+//         setTree(tree);
+//         const tokenAddress = await contract.token();
+//         setTokenAddress(tokenAddress);
+//         const walletAddressesData = require("./walletAddresses.json");
+//         setClaimAmount(Object.values(walletAddressesData));
+//       } else {
+//         console.error("error");
+//       }
+//     };
+//     onLoad();
+//   }, []);
+
+//   const isConnected = () => signer !== undefined;
+//   const connect = () => {
+//     getSigner(provider).then((signer) => {
+//       setSigner(signer);
+//     });
+//   };
+
+//   const getTree = async () => {
+//     const indexedAddresses = require("./walletAddresses.json");
+//     const leaves = Object.values(indexedAddresses).map(
+//       ({ address, claimAmount }) => {
+//         const addressBytes = ethers.utils.arrayify(address);
+//         const claimAmountBigNumber = ethers.BigNumber.from(claimAmount);
+//         const leafData = ethers.utils.concat([
+//           addressBytes,
+//           ethers.utils.hexZeroPad(claimAmountBigNumber.toHexString(), 32),
+//         ]);
+//         const leafHash = utils.solidityKeccak256(["bytes"], [leafData]);
+//         return leafHash;
+//       }
+//     );
+//     const tree = new MerkleTree(leaves, KECCAK256, { sortPairs: true });
+//     console.log("Generated Merkle Root:", tree.getHexRoot());
+//     return tree;
+//   };
+
+//   const getSigner = async (provider) => {
+//     const signer = await provider.getSigner();
+//     const address = await signer.getAddress();
+//     setSignerAddress(address);
+//     const signerClaimAmount = claimAmount.find(
+//       (item) => item.address.toLowerCase() === address.toLowerCase()
+//     )?.claimAmount;
+//     if (signerClaimAmount === undefined) {
+//       throw new Error("Signer claim amount is undefined");
+//     }
+//     const addressBytes = ethers.utils.arrayify(address);
+//     const claimAmountBigNumber = ethers.BigNumber.from(signerClaimAmount);
+//     const leafData = ethers.utils.concat([
+//       addressBytes,
+//       ethers.utils.hexZeroPad(claimAmountBigNumber.toHexString(), 32),
+//     ]);
+//     const leafDataHash = ethers.utils.keccak256(leafData);
+//     const proof = tree.getHexProof(leafDataHash);
+//     setProof(proof);
+//     // console.log("Generated Proof:", proof);
+//     return signer;
+//   };
+
+//   const claimAirdrop = async () => {
+//     try {
+//       if (!signerAddress) {
+//         throw new Error("Signer address is undefined");
+//       }
+//       const formattedSignerAddress = signerAddress.toLowerCase();
+//       const signerClaimAmount = claimAmount.find(
+//         (item) => item.address.toLowerCase() === formattedSignerAddress
+//       )?.claimAmount;
+
+//       if (!signerClaimAmount) {
+//         throw new Error("Signer claim amount is undefined");
+//       }
+//       // Convert the proof to bytes32 format
+//       const proofBytes32 = proof.map((p) => ethers.utils.hexlify(p));
+//       console.log("Sending claim transaction...");
+//       const tx = await contract.connect(signer).claim(
+//         signerAddress,
+//         signerClaimAmount,
+//         proofBytes32 // Use the converted proof here
+//       );
+//       await tx.wait(); // Wait for transaction confirmation
+//       setClaimStatus("Airdrop claimed successfully");
+//       console.log("Airdrop claimed successfully:", tx.hash);
+//     } catch (error) {
+//       console.error("Error claiming airdrop:", error);
+//       if (error.message.includes("Drop already claimed")) {
+//         setClaimStatus("Airdrop has already been claimed");
+//       } else if (error.message.includes("User denied transaction")) {
+//         setClaimStatus("Transaction Denied");
+//         console.log("Transaction was rejected by the user");
+//       } else if (error.message.includes("Invalid proof")) {
+//         setClaimStatus("Sorry you are not eligible");
+//       } else {
+//         setClaimStatus("Error claiming airdrop");
+//       }
+//     }
+//   };
+
+//   return (
+//     <>
+//       <div className="App">
+//         <Navbar />
+//         <header className="App-header">
+//           {isConnected() ? (
+//             <div>
+//               <h2>TokenAddress-: {tokenAddress}</h2>
+//               <p> Hii {signerAddress?.substring()}</p>
+//               <div className="list-group">
+//                 <div className="list-group-item">
+//                   <button
+//                     className="btn btn-success"
+//                     onClick={() => claimAirdrop()}
+//                   >
+//                     Claim Your Airdrop
+//                   </button>
+//                 </div>
+//                 {claimStatus && (
+//                   <div className="list-group-item">
+//                     <p>{claimStatus}</p>
+//                   </div>
+//                 )}
+//               </div>
+//             </div>
+//           ) : (
+//             <div>
+//               <p>You are not connected</p>
+//               <button onClick={connect} className="btn btn-primary">
+//                 Connect Metamask
+//               </button>
+//             </div>
+//           )}
+//         </header>
+//       </div>
+//     </>
+//   );
+// }
+
+// export default UserClaim;

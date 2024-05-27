@@ -1,0 +1,125 @@
+// import React, {useEffect, useState } from "react";
+// import axios from "axios";
+// import * as XLSX from "xlsx";
+// import "./App.css";
+// import Navbar from "./Navbar";
+// const { utils } = require("ethers");
+// const UserAirdropdata = () => {
+//   const [excelFile, setExcelFile] = useState(null);
+//   const [typeError, setTypeError] = useState("");
+//   const [excelData, setExcelData] = useState(null);
+//   const [token, setToken] = useState("");
+//   const [err,setErr] =useState("")
+//   // const [buttonClicked, setButtonClicked] = useState(false);
+
+//   const handelFile = (e) => {
+//     const selectedFile = e.target.files[0];
+//     if (selectedFile) {
+//       const fileType = [
+//         "application/vnd.ms-excel",
+//         "application/vnd.openxlmformats-officedocument.spreadsheetml.sheet",
+//         "text/csv",
+//       ];
+//       if (fileType.includes(selectedFile.type)) {
+//         setTypeError(null);
+//         setExcelFile(selectedFile);
+//         // setButtonDisabled(true);
+//         const reader = new FileReader();
+//         reader.readAsArrayBuffer(selectedFile);
+//         reader.onload = (e) => {
+//           const workbook = XLSX.read(e.target.result, { type: "buffer" });
+//           const workbookName = workbook.SheetNames[0];
+//           const workSheets = workbook.Sheets[workbookName];
+//           const data = XLSX.utils.sheet_to_json(workSheets);
+//           setExcelData(data.slice(0, 10));
+//         };
+//       } else {
+//         setTypeError("Please select CSV or Excel files");
+//         setExcelFile(null);
+//       }
+//     } else {
+//       console.log("Select Your file");
+//     }
+//   };
+
+//   const handleFileSubmit = async (e) => {
+//     e.preventDefault();
+//     if (excelFile) {
+//       if (!token || token.trim() === "" || !token.startsWith("0x")) {
+//         setErr("Field is empty or your address is invalid")
+//         console.error("Token address is required and must start with '0x'");
+//         return; // Stop further execution
+//       }
+
+//       try {
+//         const formData = new FormData();
+//         formData.append("file", excelFile);
+//         formData.append("token", token);
+//         const response = await axios.post(
+//           "http://localhost:3001/api/uploadAll",
+//           formData,
+//           {
+//             headers: {
+//               "Content-Type": "multipart/form-data",
+//             },
+//           }
+//         );
+//         setExcelData(response.data);
+//         console.log(response.data);
+//         console.log("excelData:", excelData);
+//       } catch (error) {
+//         console.error("Error uploading file:", error);
+//       }
+//     }
+//   };
+//   const handleTokenChange = (e) => {
+//     setToken(e.target.value);
+//   };
+
+//   return (
+//     <div>
+//       <Navbar />
+//       <div className="fil">
+//         <center>
+//           <h4 className="her">Upload Airdrop File</h4>
+//           <form className="" onSubmit={handleFileSubmit}>
+//             <div className="space">
+//               <input
+//                 className="btn block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+//                 type="file"
+//                 required
+//                 onChange={handelFile}
+//                 // disabled={buttonClicked}
+//               />
+//             </div>
+//             <input
+//               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+//               type="text"
+//               placeholder="Enter TokenAddress"
+//               value={token}
+//               onChange={handleTokenChange}
+//             />
+//             <p>{err}</p>
+//             <div className="space1">
+//               <button
+//                 type="submit"
+//                 className="btn btn-primary"
+//                 // onClick={() => setButtonClicked(true)}
+//                 // disabled={buttonClicked}
+//               >
+//                 Upload
+//               </button>
+//             </div>
+//             {typeError && (
+//               <div className="error" role="alert">
+//                 {typeError}
+//               </div>
+//             )}
+//           </form>
+//         </center>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default UserAirdropdata;

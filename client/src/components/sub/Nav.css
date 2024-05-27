@@ -1,0 +1,31 @@
+.ButtonsBorders {
+  border-radius: 20px;
+  border-width: 2px;
+  border-color: rgb(147, 41, 204);
+  /* font-size: 19px; */
+  /* padding: 6px; */
+}
+
+.leftnav {
+  margin-left: 120px;
+}
+
+.borderRadius {
+  border-radius: 20px;
+}
+
+.optionsmenu {
+  border-radius: 20px;
+}
+
+.boxw {
+  width: 140px;
+  /* background-color: aqua; */
+}
+
+.selectchain {
+  position: absolute;
+  margin-left: 1200px;
+  margin-bottom: 40px;
+  color: aliceblue;
+}
